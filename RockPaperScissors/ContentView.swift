@@ -20,6 +20,15 @@ struct ContentView: View {
                 Section{
                     Text("Enter Your name")
                 }
+                Section{
+                    Button("Madarchod")
+                    {
+                        
+                    }
+                    Section{
+                        Image("gear")
+                    }
+                }
             }
         }
         .padding()
