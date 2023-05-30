@@ -16,6 +16,11 @@ struct ContentView: View {
             Text("Hello, world!")
             Button("Hello World")
             {}
+            Form{
+                Section{
+                    Text("Enter Your name")
+                }
+            }
         }
         .padding()
     }
