@@ -20,6 +20,7 @@ struct ContentView: View {
                 Section{
                     Text("Enter Your name")
                 }
+                Spacer()
                 Section{
                     Button("Madarchod")
                     {
@@ -28,6 +29,7 @@ struct ContentView: View {
                     Section{
                         Image("gear")
                     }
+                    
                 }
             }
         }
