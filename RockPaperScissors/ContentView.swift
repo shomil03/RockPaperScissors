@@ -21,6 +21,10 @@ struct ContentView: View {
     @State private var computer_score = 0
     @State private var color_in_frame = false
     @State private var frame_color = Color(.green)
+    @State private var countDownTimer = 3
+    @State private var Timer_running = true
+    @State private var Button_was_tapped = false
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
        
     var body: some View {
         ZStack{
@@ -29,32 +33,59 @@ struct ContentView: View {
             let color2=Color( red: 237/255, green: 123/255, blue: 123/255)
             
             let color3=Color( red: 240/255, green: 184/255, blue: 110/255)
-            
+            let color4=Color( red: 20/255, green: 30/255, blue: 70/255)
 
             RadialGradient(stops: [.init(color: color1, location: 0.30),.init(color: color2, location: 0.30)], center: .top, startRadius: 50, endRadius: 750)
 
             
             VStack {
-               
-                HStack{
-                    Text("\(win_or_lose[choose_against]) against :")
-                        .font(.largeTitle.bold())
-                        .foregroundColor(color3)
-                        .padding()
-                    images[computer_choose]
-                        .resizable()
-                        .foregroundColor(color3)
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(color3)
+                VStack{
+                    
+                    HStack{
+                        Text("\(win_or_lose[choose_against]) against :")
+                            .font(.largeTitle.bold())
+                            .foregroundColor(color3)
+                            .padding()
+                        images[computer_choose]
+                            .resizable()
+                            .foregroundColor(color3)
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(color3)
+                    }
+//                    .padding(.top,90)
+                    
+//                    .offset(x: 0, y: -100)
+                    
+                    Text("\(countDownTimer)")
+                        .onReceive(timer){_ in
+                            if(countDownTimer>0 ){
+                                if(Timer_running){
+                                    withAnimation(){
+                                        countDownTimer-=1
+                                    }
+                                }
+                            }
+                            else{
+                            
+                                Timer_running=false
+                                    time_runs_out()
+                                
+                            }
+                        }
+                        .font(.system(size: 50,weight: .heavy))
+                        .foregroundColor(color4)
+                        .opacity(countDownTimer == 0 ? 0 : 1)
+                        .scaleEffect(countDownTimer == 0 ? 2 : 1)
+                    
+                        
                 }
-                .padding(.top,90)
                 
-                .offset(x: 0, y: -100)
                 VStack(spacing: 30){
                     ForEach(0..<3){numbers in
                         VStack(){
                             
                             Button{
+                                Button_was_tapped=true
                                 checkinput(numbers)
                                 
                             }
@@ -106,7 +137,7 @@ struct ContentView: View {
                    
                 }
                 .padding(.horizontal)
-                .offset(y:50)
+//                .offset(y:50)
                
                
                 
@@ -120,25 +151,47 @@ struct ContentView: View {
            
                 .alert(alert_title, isPresented: $showing_alert){
                     Button("Continue"){
-                        playgame()
+                        withAnimation(){
+                            playgame()
+                        }
                     }
                     
                     
                 }message: {
                     Text(alert_message)
                 }
+                
             }
+        .animation(.easeIn, value: frame_color)
+        .animation(.easeIn, value: computer_choose)
+        .animation(.easeIn, value: choose_against)
+        
         
         .ignoresSafeArea()
        
     }
+    func time_runs_out(){
+        if(!Button_was_tapped){
+            color_in_frame = true
+            frame_color = Color(.red)
+            alert_title="Think Quick"
+            alert_message="Timer ran out!"
+            computer_score+=1
+            Timer_running=true
+            Button_was_tapped=false
+            showing_alert = true
+        }
+    }
     func playgame(){
+        countDownTimer=3
         color_in_frame=false
+        Timer_running=true
         computer_choose = Int.random(in: 0...2)
         choose_against = Int.random(in: 0...1)
         
     }
     func checkinput(_ input:Int){
+        Timer_running=false
         if(computer_choose==0){
             if(input == 2){
                 status = true
