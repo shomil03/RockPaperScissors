@@ -19,54 +19,94 @@ struct ContentView: View {
     @State private var alert_message = ""
        
     var body: some View {
-        VStack {
-            HStack{
-                Text("\(win_or_lose[choose_against]) against :")
-                    .font(.largeTitle.bold())
-                    .padding()
-                images[computer_choose]
-                    .resizable()
-                    .frame(width: 50, height: 50)
-            }
-            VStack{
-                HStack{
-                    ForEach(0..<3){numbers in
-                        Button{
-                            checkinput(numbers)
-                            
-                            
-                        }
-                    label:{
-                        images[numbers]
-                            .resizable()
-                            .frame(width: 70,height: 100)
-                            .padding()
-                    }
-                        
-                        
-                        
-                    }
-                }
-            }
-            .frame( maxWidth: .infinity, minHeight: 115)
-            .background(Color.black)
-            .padding()
+        ZStack{
+//        red: 237/255, green: 123/255, blue: 123/255
+
+            let color1=Color( red: 131/255, green: 96/255, blue: 150/255, opacity: 1)
+            let color2=Color( red: 237/255, green: 123/255, blue: 123/255)
             
+            let color3=Color( red: 240/255, green: 184/255, blue: 110/255)
             
-            
+            let color4=Color( red: 235/255, green: 231/255, blue: 108/255)
+
+            RadialGradient(stops: [.init(color: color1, location: 0.30),.init(color: color2, location: 0.30)], center: .top, startRadius: 30, endRadius: 800)
 
             
-            
-            
-        }
-        .alert(alert_title, isPresented: $showing_alert){
-            Button("Continue"){
-                playgame()
+            VStack {
+               
+                HStack{
+                    Text("\(win_or_lose[choose_against]) against :")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(color3)
+                        .padding()
+                    images[computer_choose]
+                        .resizable()
+                        .foregroundColor(color3)
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(color3)
+                }
+                .padding()
+                .padding()
+                .offset(x: 0, y: -100)
+                VStack(spacing: 30){
+                    ForEach(0..<3){numbers in
+                        VStack(){
+                            
+                            Button{
+                                checkinput(numbers)
+                                
+                            }
+                            
+                        label:{
+                            VStack{
+                                images[numbers]
+                                    .resizable()
+                                    .frame(width: 100,height: 100)
+                                    .foregroundColor(color3)
+                            }
+                            
+                        }
+//
+                        }
+                        
+                    }
+                    
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .padding()
+                .offset(y:-28)
+                HStack{
+                    VStack{
+                        Image(systemName: "figure.run")
+                        
+                    }
+                    VStack{
+                        Image(systemName: "iphone.gen2")
+                    }
+                }
+               
+               
+                
+
+                
+               
+                
+
+                
             }
-            
-        }message: {
-            Text(alert_message)
+            .alert(alert_title, isPresented: $showing_alert){
+                Button("Continue"){
+                    playgame()
+                }
+                
+            }message: {
+                Text(alert_message)
+            }
         }
+        .ignoresSafeArea()
        
     }
     func playgame(){
