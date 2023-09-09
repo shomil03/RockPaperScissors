@@ -66,10 +66,12 @@ struct ContentView: View {
                                 }
                             }
                             else{
-                            
-                                Timer_running=false
+                                if(Timer_running){
+                                    
+                                    Timer_running=false
+                                    Button_was_tapped = false
                                     time_runs_out()
-                                
+                                }
                             }
                         }
                         .font(.system(size: 50,weight: .heavy))
@@ -172,14 +174,16 @@ struct ContentView: View {
     }
     func time_runs_out(){
         if(!Button_was_tapped){
-            color_in_frame = true
-            frame_color = Color(.red)
-            alert_title="Think Quick"
-            alert_message="Timer ran out!"
-            computer_score+=1
-            Timer_running=true
-            Button_was_tapped=false
-            showing_alert = true
+            if(!Timer_running){
+                color_in_frame = true
+                frame_color = Color(.red)
+                alert_title="Think Quick"
+                alert_message="Timer ran out!"
+                computer_score+=1
+                Timer_running=false
+                Button_was_tapped=true
+                showing_alert = true
+            }
         }
     }
     func playgame(){
