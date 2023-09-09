@@ -3,8 +3,14 @@
 //  RockPaperScissors
 //
 //  Created by Shomil Singh on 30/05/23.
-//
-
+//  navigation view to make user select game type.
+//  game 1-> this.✅
+//  game 2-> spontaneous selection of CPU choice.
+//  also add chances left option (like game is of 10 chances then new game starts can use stepper for this.
+//  also delay pop of of alert box.
+//  if user chose wrong button the right button should lit up(green in color with spring animation).😁
+//  more animations and transition would make app great.
+//  also could use emojis instead of system image
 import SwiftUI
 
 struct ContentView: View {
