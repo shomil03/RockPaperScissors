@@ -19,6 +19,8 @@ struct ContentView: View {
     @State private var alert_message = ""
     @State private var player_score = 0
     @State private var computer_score = 0
+    @State private var color_in_frame = false
+    @State private var frame_color = Color(.green)
        
     var body: some View {
         ZStack{
@@ -75,10 +77,11 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical)
                 .background(.ultraThinMaterial)
+                .background(color_in_frame ? frame_color : nil)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding()
                 
-                HStack(spacing: 90){
+                HStack(spacing: 120){
                     VStack{
                         Image(systemName: "figure.run")
                             .resizable()
@@ -102,6 +105,7 @@ struct ContentView: View {
 //                    .background(Color.black)
                    
                 }
+                .padding(.horizontal)
                 .offset(y:50)
                
                
@@ -113,19 +117,23 @@ struct ContentView: View {
 
                 
             }
-            .alert(alert_title, isPresented: $showing_alert){
-                Button("Continue"){
-                    playgame()
+           
+                .alert(alert_title, isPresented: $showing_alert){
+                    Button("Continue"){
+                        playgame()
+                    }
+                    
+                    
+                }message: {
+                    Text(alert_message)
                 }
-                
-            }message: {
-                Text(alert_message)
             }
-        }
+        
         .ignoresSafeArea()
        
     }
     func playgame(){
+        color_in_frame=false
         computer_choose = Int.random(in: 0...2)
         choose_against = Int.random(in: 0...1)
         
@@ -161,6 +169,8 @@ struct ContentView: View {
         if(status){
             alert_title = "You won"
             player_score+=1
+            color_in_frame=true
+            frame_color = Color(.green)
             if(choose_against == 0){
                 alert_message = "\(pieces[input]) beats \(pieces[computer_choose])"
                 
@@ -173,6 +183,8 @@ struct ContentView: View {
         else{
             alert_title = "You lose"
             computer_score+=1
+            color_in_frame=true
+            frame_color = Color(.red)
             if(choose_against == 0){
                 alert_message = "\(pieces[computer_choose]) beats \(pieces[input])"
                 
@@ -184,7 +196,14 @@ struct ContentView: View {
             
         }
         if(input == computer_choose){
+            alert_title = "You lose"
             alert_message = "Its a draw!"
+            frame_color = Color(.red)
+            if(choose_against==1){
+                player_score-=1
+                computer_score+=1
+                
+            }
         }
             
         showing_alert=true
