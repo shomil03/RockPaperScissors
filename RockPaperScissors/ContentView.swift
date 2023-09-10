@@ -10,7 +10,7 @@
 //  game 2-> spontaneous selection of CPU choice.
 //  also add chances left option (like game is of 10 chances then new game starts can use stepper for this.
 //  also delay pop of of alert box. ✅
-//  if user chose wrong button the right button should lit up(green in color with spring animation).😁
+//  if user chose wrong button the right button should lit up(green in color with spring animation).😁 ✅
 //  more animations and transition would make app great.
 //  also could use emojis instead of system image
 import SwiftUI
@@ -32,8 +32,9 @@ struct ContentView: View {
     @State private var countDownTimer = 4
     @State private var Timer_running = true
     @State private var Button_was_tapped = false
-    @State private var animation_amount = 0
+    @State private var animation_amount : Double = 0
     @State private var Button_tapped = -1
+    @State private var correct_ans = -1
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
        
     var body: some View {
@@ -103,6 +104,10 @@ struct ContentView: View {
                             Button{
                                 Button_was_tapped=true
                                 Button_tapped = numbers
+                                correctAns(numbers: numbers)
+                                withAnimation(.interpolatingSpring(stiffness: 10, damping: 2)){
+                                    animation_amount+=360
+                                }
                                 checkinput(numbers)
                                 
                             }
@@ -112,10 +117,17 @@ struct ContentView: View {
                                 images[numbers]
                                     .resizable()
                                     .frame(width: 100,height: 100)
-                                    .foregroundColor(color3)
-                                    .scaleEffect((Button_was_tapped && Button_tapped == numbers && status) ? 1.25 : 1)
+                                    .foregroundColor((!status && Button_was_tapped && numbers != Button_tapped && numbers == correct_ans) ? .green : color3)
+                                    
+                                    
+                                    .scaleEffect((Button_was_tapped && Button_tapped == numbers ) ? 1.25 : 1)
                                     .scaleEffect((Button_was_tapped && Button_tapped != numbers) ? 0.65 : 1)
+                                    
                                     .opacity((Button_was_tapped && Button_tapped != numbers) ? 0.5 : 1)
+                                    .rotation3DEffect(Angle(degrees: (status && Button_was_tapped  && numbers == Button_tapped ? animation_amount: 0)), axis: (x:0 , y:0.5 , z:0))
+                                    .rotation3DEffect(Angle(degrees: (!status && Button_was_tapped && numbers == correct_ans) ? animation_amount : 0), axis: (x:0 , y: 0.5 , z: 0))
+                                    .animation(.easeIn(duration: 1),value:Button_tapped)
+                                    
                             }
                            
                             
@@ -187,6 +199,30 @@ struct ContentView: View {
         .ignoresSafeArea()
        
     }
+    func correctAns(numbers:Int){
+        if(choose_against == 0){
+            if(computer_choose==0){
+                correct_ans = 2
+            }
+            else if(computer_choose == 1){
+                correct_ans = 0
+            }
+            else{
+                correct_ans = 1
+            }
+        }
+        else{
+            if(computer_choose==0){
+                correct_ans = 1
+            }
+            else if(computer_choose == 1){
+                correct_ans = 2
+            }
+            else{
+                correct_ans = 0
+            }
+        }
+    }
     func time_runs_out(){
         if(!Button_was_tapped){
             if(!Timer_running){
@@ -204,11 +240,14 @@ struct ContentView: View {
         }
     }
     func playgame(){
+        correct_ans = -1
+        status = false
         Button_tapped = -1
         Button_was_tapped = false
         countDownTimer=4
         color_in_frame=false
         Timer_running=true
+        animation_amount = 0
         computer_choose = Int.random(in: 0...2)
         choose_against = Int.random(in: 0...1)
         
@@ -272,6 +311,7 @@ struct ContentView: View {
             
         }
         if(input == computer_choose){
+            status = false
             alert_title = "You lose"
             alert_message = "Its a draw!"
             frame_color = Color(.red)
