@@ -9,7 +9,7 @@
 //  game 1-> this.✅
 //  game 2-> spontaneous selection of CPU choice.
 //  also add chances left option (like game is of 10 chances then new game starts can use stepper for this.
-//  also delay pop of of alert box.
+//  also delay pop of of alert box. ✅
 //  if user chose wrong button the right button should lit up(green in color with spring animation).😁
 //  more animations and transition would make app great.
 //  also could use emojis instead of system image
@@ -29,7 +29,7 @@ struct ContentView: View {
     @State private var computer_score = 0
     @State private var color_in_frame = false
     @State private var frame_color = Color(.green)
-    @State private var countDownTimer = 3
+    @State private var countDownTimer = 4
     @State private var Timer_running = true
     @State private var Button_was_tapped = false
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -65,7 +65,12 @@ struct ContentView: View {
                         .onReceive(timer){_ in
                             if(countDownTimer>0 ){
                                 if(Timer_running){
-                                    withAnimation(){
+                                    if(countDownTimer != 4){
+                                        withAnimation(){
+                                            countDownTimer-=1
+                                        }
+                                    }
+                                    else{
                                         countDownTimer-=1
                                     }
                                 }
@@ -81,7 +86,10 @@ struct ContentView: View {
                         }
                         .font(.system(size: 50,weight: .heavy))
                         .foregroundColor(color4)
-                        .opacity(countDownTimer == 0 ? 0 : 1)
+                        .opacity((countDownTimer == 0 || countDownTimer == 4) ? 0 : 1)
+//                        .opacity(countDownTimer == 4 ? 0 : 1)
+                   
+                    
                         .scaleEffect(countDownTimer == 0 ? 2 : 1)
                     
                 }
@@ -126,6 +134,8 @@ struct ContentView: View {
                             .foregroundColor(color1)
                         Text("\(player_score)")
                             .font(.title3)
+                            .italic()
+                            .bold()
                             .foregroundColor(.green)
                         
                     }
@@ -137,6 +147,8 @@ struct ContentView: View {
                             .foregroundColor(color1)
                         Text("\(computer_score)")
                             .font(.title3)
+                            .italic()
+                            .bold()
                             .foregroundColor(.red)
                     }
                     .frame(width: 40,height: 80)
@@ -183,7 +195,7 @@ struct ContentView: View {
         }
     }
     func playgame(){
-        countDownTimer=3
+        countDownTimer=4
         color_in_frame=false
         Timer_running=true
         computer_choose = Int.random(in: 0...2)
