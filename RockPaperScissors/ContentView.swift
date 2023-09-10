@@ -3,6 +3,8 @@
 //  RockPaperScissors
 //
 //  Created by Shomil Singh on 30/05/23.
+//
+//
 //  navigation view to make user select game type.
 //  game 1-> this.✅
 //  game 2-> spontaneous selection of CPU choice.
@@ -46,7 +48,6 @@ struct ContentView: View {
             
             VStack {
                 VStack{
-                    
                     HStack{
                         Text("\(win_or_lose[choose_against]) against :")
                             .font(.largeTitle.bold())
@@ -58,10 +59,8 @@ struct ContentView: View {
                             .frame(width: 50, height: 50)
                             .foregroundColor(color3)
                     }
-//                    .padding(.top,90)
-                    
-//                    .offset(x: 0, y: -100)
-                    
+                    .animation(.easeIn, value: choose_against)
+                    .animation(.easeIn, value: computer_choose)
                     Text("\(countDownTimer)")
                         .onReceive(timer){_ in
                             if(countDownTimer>0 ){
@@ -85,7 +84,6 @@ struct ContentView: View {
                         .opacity(countDownTimer == 0 ? 0 : 1)
                         .scaleEffect(countDownTimer == 0 ? 2 : 1)
                     
-                        
                 }
                 
                 VStack(spacing: 30){
@@ -119,6 +117,7 @@ struct ContentView: View {
                 .background(color_in_frame ? frame_color : nil)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding()
+                .animation(.easeIn(duration: 1), value: color_in_frame)
                 
                 HStack(spacing: 120){
                     VStack{
@@ -146,33 +145,22 @@ struct ContentView: View {
                 }
                 .padding(.horizontal)
 //                .offset(y:50)
-               
-               
-                
-
-                
-               
-                
-
                 
             }
-           
-                .alert(alert_title, isPresented: $showing_alert){
-                    Button("Continue"){
-                        withAnimation(){
-                            playgame()
-                        }
-                    }
+            
+            .alert(alert_title, isPresented: $showing_alert){
+                Button("Continue"){
                     
+                        playgame()
                     
-                }message: {
-                    Text(alert_message)
                 }
                 
+                
+            }message: {
+                Text(alert_message)
             }
-        .animation(.easeIn, value: frame_color)
-        .animation(.easeIn, value: computer_choose)
-        .animation(.easeIn, value: choose_against)
+            
+        }
         
         
         .ignoresSafeArea()
@@ -188,7 +176,9 @@ struct ContentView: View {
                 computer_score+=1
                 Timer_running=false
                 Button_was_tapped=true
-                showing_alert = true
+                Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
+                    showing_alert = true
+                }
             }
         }
     }
@@ -268,8 +258,9 @@ struct ContentView: View {
                 
             }
         }
-            
-        showing_alert=true
+        Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
+            showing_alert=true
+        }
         
         
     }
