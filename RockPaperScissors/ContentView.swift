@@ -32,6 +32,8 @@ struct ContentView: View {
     @State private var countDownTimer = 4
     @State private var Timer_running = true
     @State private var Button_was_tapped = false
+    @State private var animation_amount = 0
+    @State private var Button_tapped = -1
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
        
     var body: some View {
@@ -87,7 +89,7 @@ struct ContentView: View {
                         .font(.system(size: 50,weight: .heavy))
                         .foregroundColor(color4)
                         .opacity((countDownTimer == 0 || countDownTimer == 4) ? 0 : 1)
-//                        .opacity(countDownTimer == 4 ? 0 : 1)
+
                    
                     
                         .scaleEffect(countDownTimer == 0 ? 2 : 1)
@@ -100,6 +102,7 @@ struct ContentView: View {
                             
                             Button{
                                 Button_was_tapped=true
+                                Button_tapped = numbers
                                 checkinput(numbers)
                                 
                             }
@@ -110,13 +113,19 @@ struct ContentView: View {
                                     .resizable()
                                     .frame(width: 100,height: 100)
                                     .foregroundColor(color3)
+                                    .scaleEffect((Button_was_tapped && Button_tapped == numbers && status) ? 1.25 : 1)
+                                    .scaleEffect((Button_was_tapped && Button_tapped != numbers) ? 0.65 : 1)
+                                    .opacity((Button_was_tapped && Button_tapped != numbers) ? 0.5 : 1)
                             }
+                           
                             
                         }
 //
                         }
                         
                     }
+                    
+                    
                     
                 }
                 .frame(maxWidth: .infinity)
@@ -195,6 +204,8 @@ struct ContentView: View {
         }
     }
     func playgame(){
+        Button_tapped = -1
+        Button_was_tapped = false
         countDownTimer=4
         color_in_frame=false
         Timer_running=true
